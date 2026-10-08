@@ -200,7 +200,7 @@ def is_leap_year(year: int) -> bool:
     Expected: 2000 -> True, 2024 -> True, 1900 -> False, 2100 -> False.
     """
     # BUG: Incomplete leap year rule
-    return year % 4 == 0
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
 
 def calculate_average(numbers: list) -> float:
@@ -210,6 +210,9 @@ def calculate_average(numbers: list) -> float:
     Expected: Should return 0.0 for an empty list.
     """
     # BUG: No check for empty list before division
+    if len(numbers) == 0:
+        return 0.0
+
     return sum(numbers) / len(numbers)
 
 
@@ -220,7 +223,7 @@ def is_valid_password_length(password: str) -> bool:
     Expected: "short" -> False, "strongpassword123" -> True.
     """
     # BUG: Inverted condition
-    return len(password) < 8
+    return len(password) > 8
 
 
 def format_currency_usd(amount: float) -> str:
@@ -230,7 +233,7 @@ def format_currency_usd(amount: float) -> str:
     Expected: format_currency_usd(19.9) -> "$19.90"
     """
     # BUG: .1f instead of .2f
-    return f"${amount:.1f}"
+    return f"${amount:.2f}"
 
 
 def calculate_ticket_price(age: int) -> float:
@@ -245,6 +248,6 @@ def calculate_ticket_price(age: int) -> float:
     if age < 12:
         return 5.0
     # BUG: Condition checks age < 65 instead of age >= 65
-    elif age < 65:
+    elif age >= 65:
         return 7.0
     return 12.0
