@@ -17,7 +17,7 @@ def is_even(n: int) -> bool:
     Expected: is_even(4) -> True, is_even(7) -> False, is_even(-2) -> True.
     """
     # BUG: Checks for 1 instead of 0
-    return n % 2 == 1
+    return n % 2 == 0
 
 
 def clamp_number(value: float, min_val: float, max_val: float) -> float:
@@ -28,9 +28,9 @@ def clamp_number(value: float, min_val: float, max_val: float) -> float:
     """
     # BUG: Inverted boundary checks
     if value < min_val:
-        return max_val
-    elif value > max_val:
         return min_val
+    elif value > max_val:
+        return max_val
     return value
 
 
@@ -42,7 +42,7 @@ def discount_price(price: float, discount_percent: float) -> float:
     """
     # BUG: Computes discount amount, forgets to subtract from price
     discount_amount = price * (discount_percent / 100.0)
-    return discount_amount
+    return price - discount_amount
 
 
 def find_max_number(numbers: list) -> int:
@@ -52,7 +52,7 @@ def find_max_number(numbers: list) -> int:
     Expected: find_max_number([-10, -5, -20]) -> -5
     """
     # BUG: Initializing to 0 fails for all-negative lists
-    current_max = 0
+    current_max = numbers[0]
     for n in numbers:
         if n > current_max:
             current_max = n
@@ -66,7 +66,7 @@ def calculate_bmi(weight_kg: float, height_m: float) -> float:
     Expected: calculate_bmi(70, 1.75) -> ~22.86
     """
     # BUG: Missing height squared
-    return round(weight_kg / height_m, 2)
+    return round(weight_kg / height_m**2, 2)
 
 
 # =====================================================================
@@ -80,7 +80,7 @@ def is_palindrome(text: str) -> bool:
     Expected: Case-insensitive check (e.g. "Racecar" -> True).
     """
     # BUG: Compares without lowercasing
-    cleaned = text.replace(" ", "")
+    cleaned = text.replace(" ", "").lower()
     return cleaned == cleaned[::-1]
 
 
@@ -91,7 +91,7 @@ def count_vowels(text: str) -> int:
     Expected: count_vowels("umbrella") -> 3
     """
     # BUG: Missing 'u' in vowels
-    vowels = "aeioAEIO"
+    vowels = "aeiouAEIOU"
     return sum(1 for char in text if char in vowels)
 
 
@@ -104,7 +104,7 @@ def truncate_text(text: str, max_len: int) -> str:
     if len(text) <= max_len:
         return text
     # BUG: Takes max_len characters THEN appends 3 dots (exceeding max_len)
-    return text[:max_len] + "..."
+    return text[:max_len - 3] + "..."
 
 
 def reverse_words(sentence: str) -> str:
@@ -114,18 +114,12 @@ def reverse_words(sentence: str) -> str:
     Expected: reverse_words("Hello World") -> "World Hello"
     """
     # BUG: Reverses character stream instead of words
-    return sentence[::-1]
+    return " ".join(sentence.split()[::-1])
 
 
 def get_file_extension(filename: str) -> str:
-    """
-    Bug #10: Extract file extension without the leading dot.
-    Symptom: Fails when filename has no extension (returns full filename).
-    Expected: "script.py" -> "py", "archive.tar.gz" -> "gz", "README" -> ""
-    """
     if "." not in filename:
-        # BUG: Returns original filename instead of empty string
-        return filename
+        return ""
     return filename.split(".")[-1]
 
 
@@ -140,7 +134,7 @@ def get_top_students(grades: list, n: int) -> list:
     Expected: get_top_students(["Alice", "Bob", "Charlie", "David"], 2) -> ["Alice", "Bob"]
     """
     # BUG: Slices up to n-1 instead of n
-    return grades[: n - 1]
+    return grades[: n]
 
 
 def remove_duplicates_preserve_order(items: list) -> list:
@@ -150,7 +144,13 @@ def remove_duplicates_preserve_order(items: list) -> list:
     Expected: [3, 1, 2, 3, 2] -> [3, 1, 2]
     """
     # BUG: list(set(items)) does not guarantee order preservation
-    return list(set(items))
+    result = []
+
+    for item in items:
+        if item not in result:
+            result.append(item)
+
+    return result
 
 
 def sum_even_numbers(numbers: list) -> int:
@@ -162,7 +162,7 @@ def sum_even_numbers(numbers: list) -> int:
     total = 0
     for n in numbers:
         # BUG: Condition checks for odd numbers
-        if n % 2 != 0:
+        if n % 2 == 0:
             total += n
     return total
 
@@ -174,8 +174,9 @@ def merge_two_dicts(d1: dict, d2: dict) -> dict:
     Expected: Merged dict returned, d1 remains unchanged.
     """
     # BUG: Mutates d1 directly
-    d1.update(d2)
-    return d1
+    merged = d1.copy()
+    merged.update(d2)
+    return merged
 
 
 def filter_positive_numbers(numbers: list) -> list:
@@ -185,7 +186,7 @@ def filter_positive_numbers(numbers: list) -> list:
     Expected: filter_positive_numbers([-2, 0, 3, -1, 5]) -> [3, 5]
     """
     # BUG: >= includes 0, which is not positive
-    return [n for n in numbers if n >= 0]
+    return [n for n in numbers if n > 0]
 
 
 # =====================================================================
